@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// Imports temporaires pour éviter les erreurs de compilation avant de créer les fichiers
 import 'auth/login_screen.dart'; 
 import 'admin/dashboard_screen.dart';
 
@@ -19,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _checkLoginStatus() async {
-    // Simulation d'un chargement (ex: le temps de charger des configs)
+    // Simulation d'un chargement ( le temps de charger des configs)
     await Future.delayed(const Duration(seconds: 2));
 
     // Vérification Firebase Auth

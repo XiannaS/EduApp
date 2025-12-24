@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/course_model.dart';
-import '../../models/enrollment_model.dart'; // <--- Import nécessaire
-import '../../services/enrollment_service.dart'; // <--- Import nécessaire
+import '../../models/enrollment_model.dart'; 
+import '../../services/enrollment_service.dart';  
 import 'add_enrollment_screen.dart';
 
 class CourseDetailsScreen extends StatelessWidget {
@@ -85,7 +85,7 @@ class CourseDetailsScreen extends StatelessWidget {
                   Text(course.description, style: const TextStyle(color: Colors.black87, height: 1.5)),
                   const Divider(height: 40),
 
-                  // --- C'EST ICI QUE ÇA CHANGE : STREAM BUILDER ---
+                  // Liste des Étudiants Inscrits
                   StreamBuilder<List<EnrollmentModel>>(
                     stream: enrollmentService.getStudentsForCourse(course.id),
                     builder: (context, snapshot) {
@@ -104,7 +104,7 @@ class CourseDetailsScreen extends StatelessWidget {
                             children: [
                               const Text("Étudiants Inscrits", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                               Text(
-                                "$currentCount/${course.maxCapacity}", // <--- C'EST LE VRAI COMPTEUR
+                                "$currentCount/${course.maxCapacity}",  
                                 style: TextStyle(
                                   color: currentCount >= course.maxCapacity ? Colors.red : Colors.grey, 
                                   fontWeight: FontWeight.bold
@@ -132,10 +132,10 @@ class CourseDetailsScreen extends StatelessWidget {
                               ),
                             )
                           else
-                            // 3. La Liste des Vrais Étudiants
+                            
                             ListView.separated(
-                              shrinkWrap: true, // Important dans un ScrollView
-                              physics: const NeverScrollableScrollPhysics(), // Important dans un ScrollView
+                              shrinkWrap: true,  
+                              physics: const NeverScrollableScrollPhysics(),  
                               itemCount: snapshot.data!.length,
                               separatorBuilder: (ctx, i) => const Divider(height: 1),
                               itemBuilder: (context, index) {

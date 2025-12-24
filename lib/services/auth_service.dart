@@ -12,7 +12,7 @@ class AuthService {
       );
       return result.user;
     } catch (e) {
-      print("Erreur de connexion : $e"); // Utile pour le debug
+      print("Erreur de connexion : $e");  
       rethrow; // On renvoie l'erreur pour l'afficher dans l'UI
     }
   }

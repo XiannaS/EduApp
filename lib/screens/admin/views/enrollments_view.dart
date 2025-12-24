@@ -8,12 +8,12 @@ import '../add_enrollment_screen.dart';
 
 class EnrollmentsView extends StatelessWidget {
   const EnrollmentsView({super.key});
-
+// Construction de la vue des inscriptions
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
     final EnrollmentService enrollmentService = EnrollmentService();
-
+// Scaffold principal
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: FloatingActionButton.extended(
@@ -29,7 +29,7 @@ class EnrollmentsView extends StatelessWidget {
           children: [
             Text("Historique des Inscriptions", style: TextStyle(color: theme.textColor, fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 20),
-            
+            // LISTE DES INSCRIPTIONS
             Expanded(
               child: StreamBuilder<List<EnrollmentModel>>(
                 stream: enrollmentService.getAllEnrollments(),
@@ -40,7 +40,7 @@ class EnrollmentsView extends StatelessWidget {
                   }
 
                   final enrollments = snapshot.data!;
-                  
+                  // Liste des inscriptions
                   return ListView.builder(
                     itemCount: enrollments.length,
                     itemBuilder: (context, index) {

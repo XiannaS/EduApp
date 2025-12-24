@@ -7,7 +7,7 @@ import '../../services/course_service.dart';
 import '../../services/enrollment_service.dart';
 
 class AddEnrollmentScreen extends StatefulWidget {
-  // Optionnel : Si on vient depuis un cours, on pré-remplit le cours
+  //  Si on vient depuis un cours, on pré-remplit le cours
   final CourseModel? preselectedCourse; 
 
   const AddEnrollmentScreen({super.key, this.preselectedCourse});
@@ -84,7 +84,7 @@ class _AddEnrollmentScreenState extends State<AddEnrollmentScreen> {
                 final students = snapshot.data!;
                 
                 return DropdownButtonFormField<UserModel>(
-                  isExpanded: true, // <--- SOLUTION POUR LES BANDES JAUNES
+                  isExpanded: true,  
                   decoration: const InputDecoration(labelText: "Sélectionner l'étudiant", border: OutlineInputBorder(), prefixIcon: Icon(Icons.person)),
                   value: _selectedStudent,
                   items: students.map((s) {
@@ -92,7 +92,7 @@ class _AddEnrollmentScreenState extends State<AddEnrollmentScreen> {
                       value: s, 
                       child: Text(
                         "${s.name} (${s.matricule ?? 'N/A'})",
-                        overflow: TextOverflow.ellipsis, // Coupe proprement si trop long
+                        overflow: TextOverflow.ellipsis,  
                       )
                     );
                   }).toList(),
@@ -110,21 +110,21 @@ class _AddEnrollmentScreenState extends State<AddEnrollmentScreen> {
                 final courses = snapshot.data!;
 
                 return DropdownButtonFormField<CourseModel>(
-                  isExpanded: true, // <--- SOLUTION POUR LES BANDES JAUNES
+                  isExpanded: true,  
                   decoration: const InputDecoration(labelText: "Sélectionner le cours", border: OutlineInputBorder(), prefixIcon: Icon(Icons.book)),
                   value: _selectedCourse,
-                  // On compare les IDs pour que le pré-remplissage fonctionne (nécessite operator== dans CourseModel)
+                  // On compare les IDs pour que le pré-remplissage fonctionne  
                   items: courses.map((c) {
                     return DropdownMenuItem(
                       value: c, 
                       child: Text(
                         "${c.title} (${c.price} MAD)",
-                        overflow: TextOverflow.ellipsis, // Coupe proprement si trop long
+                        overflow: TextOverflow.ellipsis, 
                       )
                     );
                   }).toList(),
                   onChanged: widget.preselectedCourse != null 
-                    ? null // Si pré-rempli, on bloque le changement (optionnel)
+                    ? null // Si pré-rempli, on bloque le changement 
                     : (val) => setState(() => _selectedCourse = val), 
                 );
               },

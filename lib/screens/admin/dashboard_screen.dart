@@ -3,15 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart'; 
 import '../../services/dashboard_service.dart';
 import '../../providers/theme_provider.dart';
-
-// Importe tes vues (Assure-toi que les chemins sont bons)
 import 'views/students_view.dart';
 import 'views/course_view.dart';
 import 'views/enrollments_view.dart';
-import '../../widgets/admin_header.dart'; // Si tu as ce widget
-import '../../widgets/side_menu.dart';    // Si tu as ce widget
-import '../../widgets/stat_card.dart';    // Si tu as ce widget
-
+import '../../widgets/admin_header.dart';  
+import '../../widgets/side_menu.dart';     
+import '../../widgets/stat_card.dart';     
 // Couleurs constantes pour les graphiques
 const Color kAccentBlue = Color(0xFF2D62ED);
 const Color kAccentGreen = Color(0xFF1CC24A);
@@ -65,7 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Expanded(
             child: Column(
               children: [
-                // Header (si tu l'as créé, sinon retire cette ligne)
+                 
                 const AdminHeader(), 
                 
                 // La page qui change
@@ -161,12 +158,12 @@ class _StatsViewState extends State<_StatsView> {
                     direction: isWide ? Axis.horizontal : Axis.vertical,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // GRAPHIQUE 1 : LIGNE (Fausse donnée pour la démo, c'est ok)
+                      // GRAPHIQUE 1 : LIGNE 
                       Expanded(
                         flex: isWide ? 2 : 0,
                         child: _buildChartContainer(
                           theme,
-                          title: "Activité des Inscriptions (6 mois)",
+                          title: "Activité des Inscriptions  simulée",
                           child: LineChart(
                             LineChartData(
                               gridData: const FlGridData(show: false),
@@ -237,7 +234,7 @@ class _StatsViewState extends State<_StatsView> {
     );
   }
 
-  // Helper pour encadrer les graphiques (Design propre)
+  // Helper pour encadrer les graphiques  
   Widget _buildChartContainer(ThemeProvider theme, {required String title, required Widget child}) {
     return Container(
       height: 350,

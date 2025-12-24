@@ -70,12 +70,12 @@ class CoursesView extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final course = courses[index];
                       
-                      // CARTE DU COURS (DESIGN PRO)
-                      return GestureDetector( // <--- AJOUTE ÇA
+                      // CARTE DU COURS (cliquable)
+                      return GestureDetector(
   onTap: () {
     Navigator.push(context, MaterialPageRoute(builder: (_) => CourseDetailsScreen(course: course)));
   },
-  child: Card(
+  child: Card( 
                         color: theme.cardColor,
                         margin: const EdgeInsets.only(bottom: 12),
                         elevation: 0,
@@ -96,7 +96,7 @@ class CoursesView extends StatelessWidget {
                                   image: DecorationImage(
                                     image: NetworkImage(course.imageUrl.isNotEmpty 
                                       ? course.imageUrl 
-                                      : "https://via.placeholder.com/150"),
+                                      : "https://via.placeholder.com/150"),// Placeholder si pas d'image
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -145,7 +145,7 @@ class CoursesView extends StatelessWidget {
                                   
                                   const SizedBox(height: 5),
                                   
-                                  // Bouton Supprimer (Rouge discret)
+                                  // Bouton Supprimer 
                                   InkWell(
                                     onTap: () => courseService.deleteCourse(course.id),
                                     child: const Padding(

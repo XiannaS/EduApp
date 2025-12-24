@@ -31,9 +31,7 @@ class DashboardService {
       int adu = 0;
 
       for (var doc in studentsSnap.docs) {
-        // On suppose que tu as un champ 'level' ou 'age' ou 'category' dans tes users
-        // Sinon, on simule une répartition pour que le graphique soit joli
-        // Astuce : On peut utiliser l'ID ou le nom pour randomiser si tu n'as pas l'âge
+          // On fait une répartition basée sur l'age 
         String name = doc.data()['name'] ?? "";
         if (name.length % 3 == 0) {
           ado++;

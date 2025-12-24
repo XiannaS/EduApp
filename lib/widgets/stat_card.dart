@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/theme_provider.dart';
 
+// Carte de statistique utilisée dans le tableau de bord
 class StatCard extends StatelessWidget {
   final String title, value, subtext;
   final Color color;
   final IconData icon;
 
   const StatCard({super.key, required this.title, required this.value, required this.subtext, required this.color, required this.icon});
-
+// Construction de la carte
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
-import '../admin/dashboard_screen.dart'; // On créera ça après
-import 'register_screen.dart'; // Pour l'inscription
+import '../admin/dashboard_screen.dart';  
+import 'register_screen.dart';  
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,7 +11,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Contrôleurs pour récupérer le texte (vu dans ton cours)
+  // Contrôleurs pour récupérer le texte 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>(); // Pour valider le formulaire
@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
-
+// Le build de l'UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     
-                    // Lien vers inscription (temporaire pour créer ton compte admin)
+                    // Lien vers inscription  
                     TextButton(
                       onPressed: () {
                          Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterScreen()));

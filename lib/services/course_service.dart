@@ -24,7 +24,7 @@ class CourseService {
   Stream<List<CourseModel>> getCoursesStream() async* {
     // 1. D'ABORD : On envoie ce qu'on a en cache (Affichage instantané !)
     if (_localBox.isNotEmpty) {
-      print("📦 Chargement depuis le cache local Hive...");
+      print("Chargement depuis le cache local Hive...");
       final List<dynamic> cachedMaps = _localBox.values.toList();
       final List<CourseModel> localCourses = cachedMaps.map((map) {
         // On doit caster le map dynamique en Map<String, dynamic>
@@ -36,7 +36,7 @@ class CourseService {
     // 2. ENSUITE : On vérifie la connexion internet
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
-      print("Pas d'internet : On reste sur les données locales.");
+      print("Pas d'internet, utilisation du cache local uniquement.");
       return; // On s'arrête là, on garde les données locales
     }
 

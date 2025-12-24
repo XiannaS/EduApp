@@ -4,7 +4,7 @@ import '../../../../models/user_model.dart';
 import '../../../../services/student_service.dart';
 import '../../../../providers/theme_provider.dart';
 import '../add_student_screen.dart';
-import '../student_details_screen.dart'; // <--- NOUVEL IMPORT
+import '../student_details_screen.dart'; 
 
 class StudentsView extends StatefulWidget {
   const StudentsView({super.key});

@@ -10,12 +10,12 @@ const Color kAccentBlue = Color(0xFF2D62ED);
 class AdminHeader extends StatelessWidget {
   const AdminHeader({super.key});
 
-  // --- CORRECTION ICI : On ajoute 'ThemeProvider theme' en paramètre ---
+  // Fonction pour afficher les notifications
   void _showNotifications(BuildContext context, ThemeProvider theme) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        // Titre corrigé avec Expanded pour éviter l'overflow jaune
+         
         title: Row(
           children: [
             const Icon(Icons.notifications_active, color: kAccentBlue),
@@ -23,7 +23,7 @@ class AdminHeader extends StatelessWidget {
             Expanded(
               child: Text(
                 "Alertes Pédagogiques",
-                style: TextStyle(fontSize: 18, color: theme.textColor), // Maintenant 'theme' est reconnu !
+                style: TextStyle(fontSize: 18, color: theme.textColor),  
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -38,10 +38,9 @@ class AdminHeader extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
-              if (snapshot.hasError) return const Text("Erreur de chargement");
+              if (snapshot.hasError) return const Text("Erreur de chargement"); // Gestion simple des erreurs des notifs
 
               final notifs = snapshot.data ?? [];
-
               return ListView.separated(
                 itemCount: notifs.length,
                 separatorBuilder: (ctx, i) => const Divider(),
@@ -52,7 +51,7 @@ class AdminHeader extends StatelessWidget {
                     leading: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: (n['isUrgent'] as bool) ? Colors.red.withOpacity(0.1) : Colors.blue.withOpacity(0.1),
+                        color: (n['isUrgent'] as bool) ? Colors.red.withOpacity(0.1) : Colors.blue.withOpacity(0.1), 
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -88,12 +87,13 @@ class AdminHeader extends StatelessWidget {
       ),
     );
   }
+// -- FIN FONCTION NOTIFS --
 
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context); // C'est ici que 'theme' est créé
     final isMobile = MediaQuery.of(context).size.width < 600;
-
+// On détermine si on est sur mobile pour ajuster l'affichage
     return Container(
       height: 70,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -101,6 +101,7 @@ class AdminHeader extends StatelessWidget {
         color: theme.cardColor,
         border: Border(bottom: BorderSide(color: Colors.grey.withOpacity(0.1))),
       ),
+      // Le contenu de l'en-tête
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -108,11 +109,11 @@ class AdminHeader extends StatelessWidget {
             icon: Icon(Icons.menu, color: theme.textColor), 
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
-
+// Partie droite de l'en-tête
           Row(
             children: [
               IconButton(
-                icon: Icon(theme.isDarkMode ? Icons.light_mode : Icons.dark_mode, color: theme.textColor),
+                icon: Icon(theme.isDarkMode ? Icons.light_mode : Icons.dark_mode, color: theme.textColor), // Icône dynamique du changement de theme
                 onPressed: () => theme.toggleTheme(),
               ),
               const SizedBox(width: 10),
@@ -138,19 +139,19 @@ class AdminHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text("Admin Principal", style: TextStyle(color: theme.textColor, fontWeight: FontWeight.bold, fontSize: 14)),
-                    Text("admin@emsi.ma", style: TextStyle(color: theme.subTextColor, fontSize: 11)),
+                    Text("Admin Principal", style: TextStyle(color: theme.textColor, fontWeight: FontWeight.bold, fontSize: 14)), //
+                    Text("admin@emsi.ma", style: TextStyle(color: theme.subTextColor, fontSize: 11)),  
                   ],
                 ),
                 const SizedBox(width: 10),
               ],
               CircleAvatar(backgroundColor: kAccentBlue.withOpacity(0.2), radius: 18, child: const Text("A", style: TextStyle(color: kAccentBlue, fontWeight: FontWeight.bold))),
               const SizedBox(width: 10),
-              IconButton(
+              IconButton( // Bouton de déconnexion
                 icon: Icon(Icons.logout, color: theme.subTextColor),
                 onPressed: () async {
                    await FirebaseAuth.instance.signOut();
-                   if(context.mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+                   if(context.mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen())); // Redirection vers l'écran de login
                 },
               )
             ],

@@ -21,7 +21,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   final _priceController = TextEditingController();
   final _capacityController = TextEditingController(text: "30");
 
-  // Listes de choix (Définies une seule fois pour éviter les bugs)
+  // Listes de choix  
   final List<String> _categories = ['Développement', 'Design', 'Réseaux', 'Sécurité', 'Marketing', 'Business'];
   final List<String> _levels = ['Débutant', 'Intermédiaire', 'Avancé'];
 
@@ -104,7 +104,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               ),
               const SizedBox(height: 15),
 
-              // --- ZONE DES DROPDOWNS (CORRIGÉE) ---
+              // --- ZONE DES DROPDOWNS ---
               Row(
                 children: [
                   Expanded(
@@ -180,7 +180,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               ),
               
               const SizedBox(height: 15),
-              // Image URL (On garde ton champ texte simple)
+              // Image URL  
               TextFormField(
                 controller: _imageController,
                 decoration: const InputDecoration(labelText: "URL Image (Optionnel)", border: OutlineInputBorder(), prefixIcon: Icon(Icons.image)),
