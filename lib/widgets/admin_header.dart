@@ -3,55 +3,79 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:test/screens/auth/login_screen.dart';
 import '../../providers/theme_provider.dart';
-import '../../services/notification_service.dart'; // Import du service
- 
+import '../../services/notification_service.dart';
 
 const Color kAccentBlue = Color(0xFF2D62ED);
 
 class AdminHeader extends StatelessWidget {
   const AdminHeader({super.key});
 
-  // Fonction pour afficher les notifs
-  void _showNotifications(BuildContext context) {
+  // --- CORRECTION ICI : On ajoute 'ThemeProvider theme' en paramètre ---
+  void _showNotifications(BuildContext context, ThemeProvider theme) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Row(
+        // Titre corrigé avec Expanded pour éviter l'overflow jaune
+        title: Row(
           children: [
-            Icon(Icons.notifications_active, color: kAccentBlue),
-            SizedBox(width: 10),
-            Text("Alertes Pédagogiques"),
+            const Icon(Icons.notifications_active, color: kAccentBlue),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                "Alertes Pédagogiques",
+                style: TextStyle(fontSize: 18, color: theme.textColor), // Maintenant 'theme' est reconnu !
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         content: SizedBox(
           width: double.maxFinite,
-          height: 300, // Hauteur max de la boite
+          height: 300,
           child: FutureBuilder<List<Map<String, dynamic>>>(
-            future: NotificationService().fetchNotifications(), // Appel API
+            future: NotificationService().fetchNotifications(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (snapshot.hasError) return const Text("Erreur de chargement");
 
-              final notifs = snapshot.data!;
+              final notifs = snapshot.data ?? [];
+
               return ListView.separated(
                 itemCount: notifs.length,
                 separatorBuilder: (ctx, i) => const Divider(),
                 itemBuilder: (ctx, i) {
                   final n = notifs[i];
                   return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: n['isUrgent'] ? Colors.red.withOpacity(0.1) : Colors.blue.withOpacity(0.1),
+                    contentPadding: EdgeInsets.zero,
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: (n['isUrgent'] as bool) ? Colors.red.withOpacity(0.1) : Colors.blue.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
                       child: Icon(
-                        n['isUrgent'] ? Icons.warning : Icons.info, 
-                        color: n['isUrgent'] ? Colors.red : Colors.blue, 
-                        size: 20
+                        (n['isUrgent'] as bool) ? Icons.warning : Icons.info,
+                        color: (n['isUrgent'] as bool) ? Colors.red : Colors.blue,
+                        size: 20,
                       ),
                     ),
-                    title: Text(n['title'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                    subtitle: Text(n['body'], style: const TextStyle(fontSize: 12)),
-                    trailing: Text(n['time'], style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                    title: Text(
+                      n['title'],
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      n['body'],
+                      style: const TextStyle(fontSize: 12),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    trailing: Text(
+                      n['time'],
+                      style: const TextStyle(fontSize: 10, color: Colors.grey),
+                    ),
                   );
                 },
               );
@@ -67,7 +91,7 @@ class AdminHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Provider.of<ThemeProvider>(context);
+    final theme = Provider.of<ThemeProvider>(context); // C'est ici que 'theme' est créé
     final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Container(
@@ -80,7 +104,6 @@ class AdminHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Bouton Menu (Ouvre le Drawer)
           IconButton(
             icon: Icon(Icons.menu, color: theme.textColor), 
             onPressed: () => Scaffold.of(context).openDrawer(),
@@ -94,7 +117,7 @@ class AdminHeader extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               
-              // --- BOUTON NOTIFICATION ACTIF ---
+              // --- APPEL DE LA FONCTION AVEC LE THEME ---
               IconButton(
                 icon: Stack(
                   children: [
@@ -105,9 +128,9 @@ class AdminHeader extends StatelessWidget {
                     )
                   ],
                 ),
-                onPressed: () => _showNotifications(context), // Clic ici !
+                onPressed: () => _showNotifications(context, theme), // <--- On passe 'theme' ici !
               ),
-              // ---------------------------------
+              // ------------------------------------------
 
               const SizedBox(width: 15),
               if (!isMobile) ...[

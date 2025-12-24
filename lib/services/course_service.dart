@@ -36,12 +36,12 @@ class CourseService {
     // 2. ENSUITE : On vérifie la connexion internet
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
-      print("⚠️ Pas d'internet : On reste sur les données locales.");
+      print("Pas d'internet : On reste sur les données locales.");
       return; // On s'arrête là, on garde les données locales
     }
 
     // 3. SI INTERNET : On écoute Firebase pour avoir les dernières infos
-    print("🌍 Connexion à Firebase...");
+    print(" Connexion à Firebase...");
     try {
       yield* _courses.snapshots().map((snapshot) {
         // A. On convertit les données Firebase
@@ -53,7 +53,7 @@ class CourseService {
         }).toList();
 
         // B. On met à jour le cache local (HIVE)
-        print("💾 Mise à jour du cache local...");
+        print(" Mise à jour du cache local...");
         _localBox.clear(); // On vide le vieux cache
         for (var course in liveCourses) {
           // On sauvegarde chaque cours sous forme de Map

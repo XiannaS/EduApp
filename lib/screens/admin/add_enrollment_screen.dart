@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../models/user_model.dart';
 import '../../models/course_model.dart';
 import '../../models/enrollment_model.dart';
@@ -85,10 +84,17 @@ class _AddEnrollmentScreenState extends State<AddEnrollmentScreen> {
                 final students = snapshot.data!;
                 
                 return DropdownButtonFormField<UserModel>(
+                  isExpanded: true, // <--- SOLUTION POUR LES BANDES JAUNES
                   decoration: const InputDecoration(labelText: "Sélectionner l'étudiant", border: OutlineInputBorder(), prefixIcon: Icon(Icons.person)),
-                  initialValue: _selectedStudent,
+                  value: _selectedStudent,
                   items: students.map((s) {
-                    return DropdownMenuItem(value: s, child: Text("${s.name} (${s.matricule ?? 'N/A'})"));
+                    return DropdownMenuItem(
+                      value: s, 
+                      child: Text(
+                        "${s.name} (${s.matricule ?? 'N/A'})",
+                        overflow: TextOverflow.ellipsis, // Coupe proprement si trop long
+                      )
+                    );
                   }).toList(),
                   onChanged: (val) => setState(() => _selectedStudent = val),
                 );
@@ -104,11 +110,18 @@ class _AddEnrollmentScreenState extends State<AddEnrollmentScreen> {
                 final courses = snapshot.data!;
 
                 return DropdownButtonFormField<CourseModel>(
+                  isExpanded: true, // <--- SOLUTION POUR LES BANDES JAUNES
                   decoration: const InputDecoration(labelText: "Sélectionner le cours", border: OutlineInputBorder(), prefixIcon: Icon(Icons.book)),
-                  initialValue: _selectedCourse,
-                  // On compare les IDs pour que le pré-remplissage fonctionne
+                  value: _selectedCourse,
+                  // On compare les IDs pour que le pré-remplissage fonctionne (nécessite operator== dans CourseModel)
                   items: courses.map((c) {
-                    return DropdownMenuItem(value: c, child: Text("${c.title} (${c.price} MAD)"));
+                    return DropdownMenuItem(
+                      value: c, 
+                      child: Text(
+                        "${c.title} (${c.price} MAD)",
+                        overflow: TextOverflow.ellipsis, // Coupe proprement si trop long
+                      )
+                    );
                   }).toList(),
                   onChanged: widget.preselectedCourse != null 
                     ? null // Si pré-rempli, on bloque le changement (optionnel)

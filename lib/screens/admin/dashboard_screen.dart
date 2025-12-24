@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fl_chart/fl_chart.dart'; // <--- IMPORTER FL_CHART
-import 'package:test/screens/admin/views/enrollments_view.dart';
-import 'package:test/widgets/admin_header.dart';
-import 'package:test/widgets/side_menu.dart';
-import 'package:test/widgets/stat_card.dart';
-import '../../services/dashboard_service.dart'; // <--- TON NOUVEAU SERVICE
-import 'views/students_view.dart';
-import 'views/course_view.dart';
+import 'package:fl_chart/fl_chart.dart'; 
+import '../../services/dashboard_service.dart';
 import '../../providers/theme_provider.dart';
 
+// Importe tes vues (Assure-toi que les chemins sont bons)
+import 'views/students_view.dart';
+import 'views/course_view.dart';
+import 'views/enrollments_view.dart';
+import '../../widgets/admin_header.dart'; // Si tu as ce widget
+import '../../widgets/side_menu.dart';    // Si tu as ce widget
+import '../../widgets/stat_card.dart';    // Si tu as ce widget
+
+// Couleurs constantes pour les graphiques
 const Color kAccentBlue = Color(0xFF2D62ED);
 const Color kAccentGreen = Color(0xFF1CC24A);
 const Color kAccentOrange = Color(0xFFFF5C00);
@@ -39,6 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       backgroundColor: theme.bgColor,
+      // Menu latéral (Drawer) pour mobile
       drawer: !isDesktop 
         ? SideMenu(
             selectedIndex: _selectedIndex,
@@ -50,15 +54,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
         : null,
       body: Row(
         children: [
+          // Menu latéral permanent pour Desktop
           if (isDesktop)
             SideMenu(
               selectedIndex: _selectedIndex,
               onIndexChanged: (index) => setState(() => _selectedIndex = index),
             ),
+          
+          // Contenu principal
           Expanded(
             child: Column(
               children: [
-                const AdminHeader(),
+                // Header (si tu l'as créé, sinon retire cette ligne)
+                const AdminHeader(), 
+                
+                // La page qui change
                 Expanded(child: pages[_selectedIndex]),
               ],
             ),
@@ -90,6 +100,8 @@ class _StatsViewState extends State<_StatsView> {
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
     final width = MediaQuery.of(context).size.width;
+    
+    // Responsive de la grille
     int crossAxisCount = width > 1100 ? 4 : (width > 700 ? 2 : 1);
 
     return SingleChildScrollView(
@@ -97,15 +109,23 @@ class _StatsViewState extends State<_StatsView> {
       child: FutureBuilder<Map<String, dynamic>>(
         future: _statsFuture,
         builder: (context, snapshot) {
+          // 1. Chargement
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
+          // 2. Erreur (Sécurité anti-crash)
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Erreur de chargement: ${snapshot.error}", style: const TextStyle(color: Colors.red)),
+            );
+          }
+
+          // 3. Données
           final data = snapshot.data ?? {};
           final int ado = data['ado'] ?? 0;
           final int enf = data['enf'] ?? 0;
           final int adu = data['adu'] ?? 0;
-          final int total = (int.tryParse(data['students'] ?? "0") ?? 1); 
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,25 +135,25 @@ class _StatsViewState extends State<_StatsView> {
               Text("Aperçu en temps réel de l'établissement.", style: TextStyle(color: theme.subTextColor, fontSize: 14)),
               const SizedBox(height: 30),
 
-              // 1. LES CARTES (KPIs)
+              // --- 1. LES CARTES (KPIs) ---
               GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: crossAxisCount,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
-                childAspectRatio: 2.0,
+                childAspectRatio: 2.0, // Format rectangulaire des cartes
                 children: [
                   StatCard(title: "Total Étudiants", value: data['students'] ?? "0", subtext: "Inscrits actifs", color: kAccentBlue, icon: Icons.people),
                   StatCard(title: "Cours Catalogue", value: data['courses'] ?? "0", subtext: "Formations", color: kAccentGreen, icon: Icons.library_books),
-                  StatCard(title: "Valeur Catalogue", value: data['revenue'] ?? "0", subtext: "Potentiel", color: kAccentPurple, icon: Icons.monetization_on),
+                  StatCard(title: "Revenus (Est.)", value: "${data['revenue']} DH", subtext: "Valeur totale", color: kAccentPurple, icon: Icons.monetization_on),
                   const StatCard(title: "Taux de Réussite", value: "98%", subtext: "Moyenne", color: kAccentOrange, icon: Icons.school),
                 ],
               ),
 
               const SizedBox(height: 30),
 
-              // 2. LES GRAPHIQUES (Row sur Desktop, Column sur Mobile)
+              // --- 2. LES GRAPHIQUES ---
               LayoutBuilder(
                 builder: (context, constraints) {
                   bool isWide = constraints.maxWidth > 900;
@@ -141,104 +161,60 @@ class _StatsViewState extends State<_StatsView> {
                     direction: isWide ? Axis.horizontal : Axis.vertical,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // GRAPHIQUE 1 : LIGNE (Inscriptions)
+                      // GRAPHIQUE 1 : LIGNE (Fausse donnée pour la démo, c'est ok)
                       Expanded(
                         flex: isWide ? 2 : 0,
-                        child: Container(
-                          height: 350,
-                          padding: const EdgeInsets.all(20),
-                          margin: EdgeInsets.only(bottom: isWide ? 0 : 20),
-                          decoration: BoxDecoration(
-                            color: theme.cardColor,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.withOpacity(0.1)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Tendance des Inscriptions (6 mois)", style: TextStyle(color: theme.textColor, fontWeight: FontWeight.bold, fontSize: 16)),
-                              const SizedBox(height: 20),
-                              Expanded(
-                                child: LineChart(
-                                  LineChartData(
-                                    gridData: const FlGridData(show: false),
-                                    titlesData: const FlTitlesData(show: false), // Simplifié pour le design
-                                    borderData: FlBorderData(show: false),
-                                    lineBarsData: [
-                                      LineChartBarData(
-                                        spots: const [
-                                          FlSpot(0, 1), FlSpot(1, 1.5), FlSpot(2, 1.4), FlSpot(3, 3.4), FlSpot(4, 2), FlSpot(5, 5),
-                                        ],
-                                        isCurved: true,
-                                        color: kAccentBlue,
-                                        barWidth: 4,
-                                        belowBarData: BarAreaData(show: true, color: kAccentBlue.withOpacity(0.2)),
-                                        dotData: const FlDotData(show: false),
-                                      ),
-                                    ],
-                                  ),
+                        child: _buildChartContainer(
+                          theme,
+                          title: "Activité des Inscriptions (6 mois)",
+                          child: LineChart(
+                            LineChartData(
+                              gridData: const FlGridData(show: false),
+                              titlesData: const FlTitlesData(show: false),
+                              borderData: FlBorderData(show: false),
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: const [
+                                    FlSpot(0, 1), FlSpot(1, 1.5), FlSpot(2, 1.4), FlSpot(3, 3.4), FlSpot(4, 2), FlSpot(5, 4),
+                                  ],
+                                  isCurved: true,
+                                  color: kAccentBlue,
+                                  barWidth: 4,
+                                  belowBarData: BarAreaData(show: true, color: kAccentBlue.withOpacity(0.2)),
+                                  dotData: const FlDotData(show: false),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                       
                       if(isWide) const SizedBox(width: 20),
+                      if(!isWide) const SizedBox(height: 20),
 
-                      // GRAPHIQUE 2 : CAMEMBERT (Répartition Réelle)
+                      // GRAPHIQUE 2 : CAMEMBERT (Vraie donnée Firebase)
                       Expanded(
                         flex: isWide ? 1 : 0,
-                        child: Container(
-                          height: 350,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: theme.cardColor,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.withOpacity(0.1)),
-                          ),
+                        child: _buildChartContainer(
+                          theme,
+                          title: "Répartition par Profil",
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Répartition par Profil", style: TextStyle(color: theme.textColor, fontWeight: FontWeight.bold, fontSize: 16)),
-                              const SizedBox(height: 20),
                               Expanded(
                                 child: PieChart(
                                   PieChartData(
-                                    sectionsSpace: 5,
+                                    sectionsSpace: 2,
                                     centerSpaceRadius: 40,
                                     sections: [
-                                      // ADO
-                                      PieChartSectionData(
-                                        color: Colors.purple,
-                                        value: ado.toDouble(),
-                                        title: '$ado',
-                                        radius: 50,
-                                        titleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                                      ),
-                                      // ENFANT
-                                      PieChartSectionData(
-                                        color: Colors.blue,
-                                        value: enf.toDouble(),
-                                        title: '$enf',
-                                        radius: 50,
-                                        titleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                                      ),
-                                      // ADULTE
-                                      PieChartSectionData(
-                                        color: Colors.orange,
-                                        value: adu.toDouble(),
-                                        title: '$adu',
-                                        radius: 50,
-                                        titleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                                      ),
+                                      PieChartSectionData(color: Colors.purple, value: ado.toDouble(), title: '$ado', radius: 45, titleStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                      PieChartSectionData(color: Colors.blue, value: enf.toDouble(), title: '$enf', radius: 45, titleStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                      PieChartSectionData(color: Colors.orange, value: adu.toDouble(), title: '$adu', radius: 45, titleStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
                               ),
-                              // Légende
-                              const SizedBox(height: 20),
-                              Row(
+                              const SizedBox(height: 10),
+                              const Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   _LegendItem(color: Colors.purple, text: "Ado"),
@@ -257,6 +233,28 @@ class _StatsViewState extends State<_StatsView> {
             ],
           );
         },
+      ),
+    );
+  }
+
+  // Helper pour encadrer les graphiques (Design propre)
+  Widget _buildChartContainer(ThemeProvider theme, {required String title, required Widget child}) {
+    return Container(
+      height: 350,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.withOpacity(0.1)),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: TextStyle(color: theme.textColor, fontWeight: FontWeight.bold, fontSize: 16)),
+          const SizedBox(height: 20),
+          Expanded(child: child),
+        ],
       ),
     );
   }
