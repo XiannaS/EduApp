@@ -5,7 +5,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'firebase_options.dart';
 
 import 'providers/theme_provider.dart';
-// import 'providers/auth_provider.dart'; // <-- Supprimé (Inutile avec Firebase Auth direct)
 import 'screens/splash_screen.dart';
 
 void main() async {
